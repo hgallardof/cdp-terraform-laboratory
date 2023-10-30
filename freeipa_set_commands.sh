@@ -5,7 +5,7 @@
 pass_ipa="B@dPassw0rd!"
 domain="laboratory.cloudera.net"
 realm="LABORATORY.CLOUDERA.NET"
-reverse_zone="1.0.0"
+reverse_zone="1.0.10"
 host_ip=$(hostname -i)
 host_name="$(hostname).$domain"
 
