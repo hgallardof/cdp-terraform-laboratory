@@ -42,7 +42,7 @@ ln -s /bin/python2 /bin/python
 
 #Instal JDK
 #yum install java-1.8.0-openjdk -y
-yum install java-1.8.0-openjdk-devel.x86_64
+yum install java-1.8.0-openjdk-devel.x86_64 -y
 # ls -l /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.382.b05-2.el8.x86_64/jre
 # echo "export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.382.b05-2.el8.x86_64/jre" >> /etc/profile
 
