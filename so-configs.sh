@@ -76,3 +76,26 @@ render the system non-functional.
 # If yo have kerberos + FreeIPA
 # # if Red Hat IPA is used as the KDC
 # yum install krb5-workstation krb5-libs freeipa-client -y
+
+
+#Disks
+
+sudo mkfs -t ext4 /dev/sdc
+sudo mkfs -t ext4 /dev/sdd
+sudo mkfs -t ext4 /dev/sde
+sudo mkfs -t ext4 /dev/sdf
+
+sudo mkdir /data01
+sudo mkdir /data02
+sudo mkdir /data03
+sudo mkdir /data04
+
+sudo mount /dev/sdc /data01
+sudo mount /dev/sdd /data02
+sudo mount /dev/sde /data03
+sudo mount /dev/sdf /data04
+
+sudo $(echo "/dev/sdc /data01 ext4 noatime,discard 0 0
+/dev/sdd /data02 ext4 noatime,discard 0 0
+/dev/sde /data03 ext4 noatime,discard 0 0
+/dev/sdf /data04 ext4 noatime,discard 0 0">>/etc/fstab)
