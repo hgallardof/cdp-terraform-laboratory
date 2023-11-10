@@ -93,3 +93,28 @@ sudo mount /dev/sde /nn2
 echo "/dev/sdc /nn ext4 noatime,discard 0 0
 /dev/sdd /zk ext4 noatime,discard 0 0
 /dev/sde /nn2 ext4 noatime,discard 0 0" | sudo tee -a /etc/fstab
+
+
+#########################
+#$ WORKING ON MASTER 0 $#
+#########################
+
+check_master0="vm-master-0"
+if [[ "$(hostname)" == *"$check_master0"* ]]
+then
+    #CREATE CLOUDERA-MANAGER.REPO
+    echo "[cloudera-manager]
+    name=Cloudera Manager $CM_VERSION
+    baseurl=https://$USER:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/
+    gpgkey=https://$USER:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/RPM-GPG-KEY-cloudera
+    gpgcheck=1
+    enabled=1
+    autorefresh=0
+    type=rpm-md" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
+
+    #INSTALL MYSQL
+    dnf module install mysql -y
+    systemctl start mysqld
+    systemctl enable --now mysqld
+    systemctl status mysqld
+fi 
