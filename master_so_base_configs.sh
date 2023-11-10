@@ -113,8 +113,8 @@ then
     type=rpm-md" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
 
     #INSTALL MYSQL
-    dnf module install mysql -y
-    systemctl start mysqld
-    systemctl enable --now mysqld
-    systemctl status mysqld
+    sudo dnf module install mysql -y
+    sudo systemctl start mysqld
+    sudo systemctl enable --now mysqld
+    sudo systemctl status mysqld
 fi 
