@@ -104,7 +104,7 @@ if [[ "$(hostname)" == *"$check_master0"* ]]
 then
     #CREATE CLOUDERA-MANAGER.REPO
     sudo rm -rf /etc/yum.repos.d/cloudera-manager.repo
-    
+
     echo "[cloudera-manager]
     name=Cloudera Manager $CM_VERSION
     baseurl=https://$USER_REPO:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/
@@ -118,5 +118,4 @@ then
     sudo dnf module install mysql -y
     sudo systemctl start mysqld
     sudo systemctl enable --now mysqld
-    sudo systemctl status mysqld
 fi 
