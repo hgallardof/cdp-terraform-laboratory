@@ -103,10 +103,12 @@ check_master0="vm-master-0"
 if [[ "$(hostname)" == *"$check_master0"* ]]
 then
     #CREATE CLOUDERA-MANAGER.REPO
+    sudo rm -rf /etc/yum.repos.d/cloudera-manager.repo
+    
     echo "[cloudera-manager]
     name=Cloudera Manager $CM_VERSION
-    baseurl=https://$USER:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/
-    gpgkey=https://$USER:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/RPM-GPG-KEY-cloudera
+    baseurl=https://$USER_REPO:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/
+    gpgkey=https://$USER_REPO:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/RPM-GPG-KEY-cloudera
     gpgcheck=1
     enabled=1
     autorefresh=0
