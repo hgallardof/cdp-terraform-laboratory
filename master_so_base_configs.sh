@@ -118,4 +118,55 @@ then
     sudo dnf module install mysql -y
     sudo systemctl start mysqld
     sudo systemctl enable --now mysqld
+
+    #Set mysql password
+    sudo yum -y install expect
+    SECURE_MYSQL=$(expect -c "
+    set timeout 10
+    spawn mysql_secure_installation
+
+    expect \"Press y|Y for Yes, any other key for No:\" 
+    send \"y\r\"
+    expect \"Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG: \"
+    send \"2\r\"
+    expect \"New password: \" 
+    send \"Afra_2008\r\"
+    expect \"Re-enter new password: \"
+    send \"Afra_2008\r\"
+    expect \"Do you wish to continue with the password provided?(Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"
+    expect \"Remove anonymous users? (Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"
+    expect \"Disallow root login remotely? (Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"
+    expect \"Remove test database and access to it? (Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"
+    expect \"Reload privilege tables now? (Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"")
+
+    # SECURE_MYSQL=$(expect -c "
+    # set timeout 10
+    # spawn mysql_secure_installation
+
+    # expect \"Enter password for user root: \" 
+    # send \"Afra_2008\r\" 
+    # expect \"Change the password for root ? ((Press y|Y for Yes, any other key for No) : \"
+    # send \"y\r\"
+    # expect \"New password: \" 
+    # send \"Afra_2008\r\"
+    # expect \"Re-enter new password: \"
+    # send \"Afra_2008\r\"
+    # expect \"Do you wish to continue with the password provided?(Press y|Y for Yes, any other key for No) : \"
+    # send \"y\r\"
+    # expect \"Remove anonymous users? (Press y|Y for Yes, any other key for No) : \"
+    # send \"y\r\"
+    # expect \"Disallow root login remotely? (Press y|Y for Yes, any other key for No) : \"
+    # send \"y\r\"
+    # expect \"Remove test database and access to it? (Press y|Y for Yes, any other key for No) : \"
+    # send \"y\r\"
+    # expect \"Reload privilege tables now? (Press y|Y for Yes, any other key for No) : \"
+    # send \"y\r\"")
+
+    sudo yum -y remove expect
+
 fi 
