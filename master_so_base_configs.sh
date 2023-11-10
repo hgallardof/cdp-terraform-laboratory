@@ -103,16 +103,25 @@ check_master0="vm-master-0"
 if [[ "$(hostname)" == *"$check_master0"* ]]
 then
     #CREATE CLOUDERA-MANAGER.REPO
+    
+    #Install Server httpd
     sudo rm -rf /etc/yum.repos.d/cloudera-manager.repo
+    yum install httpd -y
+    mkdir -p /var/www/html/cloudera-repos/cm7/$CM_VERSION
+    systemctl start httpd
+    systemctl enable httpd
 
-    echo "[cloudera-manager]
-    name=Cloudera Manager $CM_VERSION
-    baseurl=https://$USER_REPO:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/
-    gpgkey=https://$USER_REPO:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/$SO_VERSION/yum/RPM-GPG-KEY-cloudera
-    gpgcheck=1
-    enabled=1
-    autorefresh=0
-    type=rpm-md" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
+    #Descargar y cargar binarios al repo local server
+    yum install wget -y
+    wget https://$USER_REPO:$PASS@archive.cloudera.com/p/cm7/7.10.1/repo-as-tarball/cm7.10.1-redhat8.tar.gz
+    tar xvfz cm7.10.1-redhat8.tar.gz -C /var/www/html/cloudera-repos/cm7/$CM_VERSION --strip-components=1
+    sudo chmod -R ugo+rX /var/www/html/cloudera-repos/cm7/$CM_VERSION
+
+    echo "[cloudera-repo]
+name=cloudera-repo
+baseurl=http://$(hostname -i)/cloudera-repos/cm7/$CM_VERSION
+enabled=1
+gpgcheck=0" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
 
     #INSTALL MYSQL
     sudo dnf module install mysql -y
@@ -140,28 +149,45 @@ then
     expect \"Reload privilege tables now? (Press y|Y for Yes, any other key for No) : \"
     send \"y\r\"")
 
-    # SECURE_MYSQL=$(expect -c "
-    # set timeout 10
-    # spawn mysql_secure_installation
+    mysql -u root -e "
+        CREATE DATABASE scm DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE smm DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE rman DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE schemaregistry DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE rangeradmin DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE das DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE rangerkms DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE oozie DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE hue DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE hive DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 
-    # expect \"Enter password for user root: \" 
-    # send \"Afra_2008\r\" 
-    # expect \"Change the password for root ? ((Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"New password: \" 
-    # send \"Afra_2008\r\"
-    # expect \"Re-enter new password: \"
-    # send \"Afra_2008\r\"
-    # expect \"Do you wish to continue with the password provided?(Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"Remove anonymous users? (Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"Disallow root login remotely? (Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"Remove test database and access to it? (Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"Reload privilege tables now? (Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"")
+        CREATE USER 'scm'@'%' IDENTIFIED BY 'scm_2023_H';
+        CREATE USER 'rman'@'%' IDENTIFIED BY 'rman_2023_H';
+        CREATE USER 'ranger'@'%' IDENTIFIED BY 'ranger_2023_H';
+        CREATE USER 'hue'@'%' IDENTIFIED BY 'hue_2023_H';
+        CREATE USER 'hive'@'%' IDENTIFIED BY 'hive_2023_H';
+        CREATE USER 'oozie'@'%' IDENTIFIED BY 'oozie_2023_H';
+        CREATE USER 'das'@'%' IDENTIFIED BY 'das_2023_H';
+        CREATE USER 'schemaregistry'@'%' IDENTIFIED BY 'schemaregistry_2023_H';
+        CREATE USER 'smm'@'%' IDENTIFIED BY 'smm_2023_H';
+
+        GRANT ALL PRIVILEGES ON rman.* TO 'rman'@'%';
+        GRANT ALL PRIVILEGES ON scm.* TO 'scm'@'%';
+        GRANT ALL PRIVILEGES ON rangeradmin.* TO 'ranger'@'%';
+        GRANT ALL PRIVILEGES ON rangerkms.* TO 'ranger'@'%';
+        GRANT ALL PRIVILEGES ON das.* TO 'das'@'%';
+        GRANT ALL PRIVILEGES ON schemaregistry.* TO 'schemaregistry'@'%';
+        GRANT ALL PRIVILEGES ON hue.* TO 'hue'@'%';
+        GRANT ALL PRIVILEGES ON smm.* TO 'smm'@'%';
+        GRANT ALL PRIVILEGES ON hive.* TO 'hive'@'%';
+        GRANT ALL PRIVILEGES ON oozie.* TO 'oozie'@'%';
+    "
+
+    sudo yum install cloudera-manager-daemons -y
+    sudo yum install cloudera-manager-agent cloudera-manager-server -y
+    sudo service cloudera-scm-agent start
+    sudo /opt/cloudera/cm/schema/scm_prepare_database.sh -h $(hostname -f) mysql scm scm scm_2023_H
+    sudo service cloudera-scm-server start
 
     sudo yum -y remove expect
 
