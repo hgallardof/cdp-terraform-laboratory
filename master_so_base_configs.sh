@@ -125,10 +125,6 @@ then
     set timeout 10
     spawn mysql_secure_installation
 
-    expect \"Press y|Y for Yes, any other key for No:\" 
-    send \"y\r\"
-    expect \"Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG: \"
-    send \"2\r\"
     expect \"New password: \" 
     send \"$PASS\r\"
     expect \"Re-enter new password: \"
