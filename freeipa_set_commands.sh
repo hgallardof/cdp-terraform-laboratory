@@ -13,6 +13,12 @@ sudo /usr/bin/hostnamectl set-hostname ${host_name}
 dnf install freeipa-server -y
 dnf install -y ipa-server-dns bind-dyndb-ldap
 
+sed -i "s/search/#search/g" /etc/resolv.conf
+sed -i "s/nameserver/#nameserver/g" /etc/resolv.conf
+
+echo "search laboratory.cloudera.net
+nameserver $(hostname -i)" | sudo tee -a /etc/resolv.conf
+
 sudo ipa-server-install --domain ${domain} --realm ${realm} \
     --reverse-zone=${reverse_zone}.in-addr.arpa. \
     --no-forwarders \
