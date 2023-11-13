@@ -10,21 +10,21 @@ host_ip=$(hostname -i)
 host_name="$(hostname).$domain"
 
 sudo /usr/bin/hostnamectl set-hostname ${host_name}
-dnf install freeipa-server -y
-dnf install -y ipa-server-dns bind-dyndb-ldap
+sudo dnf install freeipa-server -y
+sudo dnf install -y ipa-server-dns bind-dyndb-ldap
 
-sed -i "s/search/#search/g" /etc/resolv.conf
-sed -i "s/nameserver/#nameserver/g" /etc/resolv.conf
+sudo sed -i "s/search/#search/g" /etc/resolv.conf
+sudo sed -i "s/nameserver/#nameserver/g" /etc/resolv.conf
 
 echo "search laboratory.cloudera.net
 nameserver $(hostname -i)" | sudo tee -a /etc/resolv.conf
 
-sudo ipa-server-install --domain ${domain} --realm ${realm} \
+nohup sudo ipa-server-install --domain ${domain} --realm ${realm} \
     --reverse-zone=${reverse_zone}.in-addr.arpa. \
     --no-forwarders \
     --no-ntp \
     --setup-dns \
     --ds-password ${pass_ipa} \
     --admin-password ${pass_ipa} \
-    --unattended
+    --unattended  > /tmp/ipa-server-install.out 2> /tmp/ipa-server-install.err &
 
