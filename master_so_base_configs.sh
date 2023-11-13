@@ -128,6 +128,13 @@ gpgcheck=0" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
     sudo systemctl start mysqld
     sudo systemctl enable --now mysqld
 
+    #Installing Mysql jdbc connector
+    wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz
+    tar zxvf mysql-connector-java-5.1.48.tar.gz
+    sudo mkdir -p /usr/share/java/
+    cd mysql-connector-java-5.1.48
+    sudo cp mysql-connector-java-5.1.48-bin.jar /usr/share/java/mysql-connector-java.jar
+    
     #Set mysql password
     sudo yum -y install expect
     SECURE_MYSQL=$(expect -c "
