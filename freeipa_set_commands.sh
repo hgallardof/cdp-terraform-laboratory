@@ -9,7 +9,7 @@ echo net.ipv6.conf.default.disable_ipv6 = 1 >> /etc/sysctl.conf
 echo net.ipv6.conf.lo.disable_ipv6 = 1 >> /etc/sysctl.conf
 sysctl -p
 
-pass_ipa="B@dPassw0rd!"
+pass_ipa="Cloudera.2023"
 domain="laboratory.cloudera.net"
 realm="LABORATORY.CLOUDERA.NET"
 reverse_zone="1.0.10"
@@ -26,12 +26,12 @@ sudo sed -i "s/nameserver/#nameserver/g" /etc/resolv.conf
 echo "search laboratory.cloudera.net
 nameserver $(hostname -i)" | sudo tee -a /etc/resolv.conf
 
-nohup sudo ipa-server-install --domain ${domain} --realm ${realm} \
+sudo ipa-server-install --domain ${domain} --realm ${realm} \
     --reverse-zone=${reverse_zone}.in-addr.arpa. \
     --no-forwarders \
     --no-ntp \
     --setup-dns \
     --ds-password ${pass_ipa} \
     --admin-password ${pass_ipa} \
-    --unattended  > /tmp/ipa-server-install.out 2> /tmp/ipa-server-install.err &
+    --unattended
 
