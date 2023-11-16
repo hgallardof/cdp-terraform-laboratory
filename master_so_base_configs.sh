@@ -25,7 +25,7 @@ echo never > /sys/kernel/mm/transparent_hugepage/defrag
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
 
 #Set HOSTNAME 
-new_domain=internal.cloudapp.net
+new_domain=$DOMAIN_TF
 new_name=$(hostname)
 hostname $new_name.$new_domain
 
@@ -134,7 +134,7 @@ gpgcheck=0" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
     sudo mkdir -p /usr/share/java/
     cd mysql-connector-java-5.1.48
     sudo cp mysql-connector-java-5.1.48-bin.jar /usr/share/java/mysql-connector-java.jar
-    
+
     #Set mysql password
     sudo yum -y install expect
     SECURE_MYSQL=$(expect -c "

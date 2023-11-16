@@ -25,7 +25,7 @@ echo never > /sys/kernel/mm/transparent_hugepage/defrag
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
 
 #Set HOSTNAME 
-new_domain=internal.cloudapp.net
+new_domain=$DOMAIN_TF
 new_name=$(hostname)
 hostname $new_name.$new_domain
 
