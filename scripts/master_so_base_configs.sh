@@ -123,75 +123,75 @@ baseurl=http://$(hostname -i)/cloudera-repos/cm7/$CM_VERSION
 enabled=1
 gpgcheck=0" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
 
-    #INSTALL MYSQL
-    # sudo dnf module install mysql -y
-    # sudo systemctl start mysqld
-    # sudo systemctl enable --now mysqld
+    INSTALL MYSQL
+    sudo dnf module install mysql -y
+    sudo systemctl start mysqld
+    sudo systemctl enable --now mysqld
 
-    #Installing Mysql jdbc connector
-    # wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz
-    # tar zxvf mysql-connector-java-5.1.48.tar.gz
-    # sudo mkdir -p /usr/share/java/
-    # cd mysql-connector-java-5.1.48
-    # sudo cp mysql-connector-java-5.1.48-bin.jar /usr/share/java/mysql-connector-java.jar
+    Installing Mysql jdbc connector
+    wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz
+    tar zxvf mysql-connector-java-5.1.48.tar.gz
+    sudo mkdir -p /usr/share/java/
+    cd mysql-connector-java-5.1.48
+    sudo cp mysql-connector-java-5.1.48-bin.jar /usr/share/java/mysql-connector-java.jar
 
-    #Set mysql password
-    # sudo yum -y install expect
-    # SECURE_MYSQL=$(expect -c "
-    # set timeout 10
-    # spawn mysql_secure_installation
-    # expect \"Press y|Y for Yes, any other key for No: \"
-    # send \"y\r\"
-    # expect \"Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG: \"
-    # send \"2\r\"
-    # expect \"New password: \" 
-    # send \"$PASS\r\"
-    # expect \"Re-enter new password: \"
-    # send \"$PASS\r\"
-    # expect \"Do you wish to continue with the password provided?(Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"Remove anonymous users? (Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"Disallow root login remotely? (Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"Remove test database and access to it? (Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"
-    # expect \"Reload privilege tables now? (Press y|Y for Yes, any other key for No) : \"
-    # send \"y\r\"")
+    Set mysql password
+    sudo yum -y install expect
+    SECURE_MYSQL=$(expect -c "
+    set timeout 10
+    spawn mysql_secure_installation
+    expect \"Press y|Y for Yes, any other key for No: \"
+    send \"y\r\"
+    expect \"Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG: \"
+    send \"2\r\"
+    expect \"New password: \" 
+    send \"$PASS\r\"
+    expect \"Re-enter new password: \"
+    send \"$PASS\r\"
+    expect \"Do you wish to continue with the password provided?(Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"
+    expect \"Remove anonymous users? (Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"
+    expect \"Disallow root login remotely? (Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"
+    expect \"Remove test database and access to it? (Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"
+    expect \"Reload privilege tables now? (Press y|Y for Yes, any other key for No) : \"
+    send \"y\r\"")
 
-    # mysql -u root -e "
-    #     CREATE DATABASE scm DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE smm DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE rman DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE schemaregistry DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE rangeradmin DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE das DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE rangerkms DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE oozie DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE hue DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    #     CREATE DATABASE hive DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+    mysql -u root -e "
+        CREATE DATABASE scm DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE smm DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE rman DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE schemaregistry DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE rangeradmin DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE das DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE rangerkms DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE oozie DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE hue DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+        CREATE DATABASE hive DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 
-    #     CREATE USER 'scm'@'%' IDENTIFIED BY 'scm_2023_H';
-    #     CREATE USER 'rman'@'%' IDENTIFIED BY 'rman_2023_H';
-    #     CREATE USER 'ranger'@'%' IDENTIFIED BY 'ranger_2023_H';
-    #     CREATE USER 'hue'@'%' IDENTIFIED BY 'hue_2023_H';
-    #     CREATE USER 'hive'@'%' IDENTIFIED BY 'hive_2023_H';
-    #     CREATE USER 'oozie'@'%' IDENTIFIED BY 'oozie_2023_H';
-    #     CREATE USER 'das'@'%' IDENTIFIED BY 'das_2023_H';
-    #     CREATE USER 'schemaregistry'@'%' IDENTIFIED BY 'schemaregistry_2023_H';
-    #     CREATE USER 'smm'@'%' IDENTIFIED BY 'smm_2023_H';
+        CREATE USER 'scm'@'%' IDENTIFIED BY 'scm_2023_H';
+        CREATE USER 'rman'@'%' IDENTIFIED BY 'rman_2023_H';
+        CREATE USER 'ranger'@'%' IDENTIFIED BY 'ranger_2023_H';
+        CREATE USER 'hue'@'%' IDENTIFIED BY 'hue_2023_H';
+        CREATE USER 'hive'@'%' IDENTIFIED BY 'hive_2023_H';
+        CREATE USER 'oozie'@'%' IDENTIFIED BY 'oozie_2023_H';
+        CREATE USER 'das'@'%' IDENTIFIED BY 'das_2023_H';
+        CREATE USER 'schemaregistry'@'%' IDENTIFIED BY 'schemaregistry_2023_H';
+        CREATE USER 'smm'@'%' IDENTIFIED BY 'smm_2023_H';
 
-    #     GRANT ALL PRIVILEGES ON rman.* TO 'rman'@'%';
-    #     GRANT ALL PRIVILEGES ON scm.* TO 'scm'@'%';
-    #     GRANT ALL PRIVILEGES ON rangeradmin.* TO 'ranger'@'%';
-    #     GRANT ALL PRIVILEGES ON rangerkms.* TO 'ranger'@'%';
-    #     GRANT ALL PRIVILEGES ON das.* TO 'das'@'%';
-    #     GRANT ALL PRIVILEGES ON schemaregistry.* TO 'schemaregistry'@'%';
-    #     GRANT ALL PRIVILEGES ON hue.* TO 'hue'@'%';
-    #     GRANT ALL PRIVILEGES ON smm.* TO 'smm'@'%';
-    #     GRANT ALL PRIVILEGES ON hive.* TO 'hive'@'%';
-    #     GRANT ALL PRIVILEGES ON oozie.* TO 'oozie'@'%';
-    # "
+        GRANT ALL PRIVILEGES ON rman.* TO 'rman'@'%';
+        GRANT ALL PRIVILEGES ON scm.* TO 'scm'@'%';
+        GRANT ALL PRIVILEGES ON rangeradmin.* TO 'ranger'@'%';
+        GRANT ALL PRIVILEGES ON rangerkms.* TO 'ranger'@'%';
+        GRANT ALL PRIVILEGES ON das.* TO 'das'@'%';
+        GRANT ALL PRIVILEGES ON schemaregistry.* TO 'schemaregistry'@'%';
+        GRANT ALL PRIVILEGES ON hue.* TO 'hue'@'%';
+        GRANT ALL PRIVILEGES ON smm.* TO 'smm'@'%';
+        GRANT ALL PRIVILEGES ON hive.* TO 'hive'@'%';
+        GRANT ALL PRIVILEGES ON oozie.* TO 'oozie'@'%';
+    "
 
     sudo yum install cloudera-manager-daemons -y
     sudo yum install cloudera-manager-agent cloudera-manager-server -y
