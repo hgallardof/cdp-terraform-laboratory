@@ -196,7 +196,7 @@ gpgcheck=0" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
     sudo yum install cloudera-manager-daemons -y
     sudo yum install cloudera-manager-agent cloudera-manager-server -y
     sudo service cloudera-scm-agent start
-    # sudo /opt/cloudera/cm/schema/scm_prepare_database.sh -h $(hostname -i) mysql scm scm scm_2023_H
+    sudo /opt/cloudera/cm/schema/scm_prepare_database.sh -h $(hostname -i) mysql scm scm scm_2023_H
     sudo service cloudera-scm-server start
 
     sudo yum -y remove expect
