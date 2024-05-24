@@ -23,11 +23,13 @@ service postfix status && chkconfig postfix off
 
 echo never > /sys/kernel/mm/transparent_hugepage/defrag 
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
+echo "echo never > /sys/kernel/mm/transparent_hugepage/defrag 
+echo never > /sys/kernel/mm/transparent_hugepage/enabled"	>> /etc/rc.local 
 
 #Set HOSTNAME 
-new_domain=$DOMAIN_TF
-new_name=$(hostname)
-hostname $new_name.$new_domain
+# new_domain=$DOMAIN_TF
+# new_name=$(hostname)
+# hostname $new_name.$new_domain
 
 #####################
 # Install software  #
@@ -75,7 +77,7 @@ render the system non-functional.
 
 # If yo have kerberos + FreeIPA
 # # if Red Hat IPA is used as the KDC
-yum install krb5-workstation krb5-libs freeipa-client -y
+yum install openldap-clients krb5-workstation krb5-libs freeipa-client -y
 
 
 sudo mkfs -t ext4 /dev/sdc
@@ -97,3 +99,14 @@ echo "/dev/sdc /data01 ext4 noatime,discard 0 0
 /dev/sdd /data02 ext4 noatime,discard 0 0
 /dev/sde /data03 ext4 noatime,discard 0 0
 /dev/sdf /data04 ext4 noatime,discard 0 0" | sudo tee -a /etc/fstab
+
+sudo /usr/bin/hostnamectl set-hostname $(hostname).$DOMAIN_TF
+sudo ipa-client-install \
+--domain=$DOMAIN_TF \
+--server=$IPA_SERVER \
+--principal=$IPA_USER \
+--password=$IPA_PASS \
+-N \
+--fixed-primary \
+-U
+

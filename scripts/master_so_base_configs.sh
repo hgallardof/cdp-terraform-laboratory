@@ -23,6 +23,8 @@ service postfix status && chkconfig postfix off
 
 echo never > /sys/kernel/mm/transparent_hugepage/defrag 
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
+echo "echo never > /sys/kernel/mm/transparent_hugepage/defrag 
+echo never > /sys/kernel/mm/transparent_hugepage/enabled"	>> /etc/rc.local 
 
 #Set HOSTNAME 
 new_domain=$DOMAIN_TF
@@ -38,7 +40,7 @@ yum install wget -y
 
 #python 
 ln -s /bin/python2 /bin/python
-#yum install python39 -y
+yum install python38 -y
 
 #Instal JDK
 #yum install java-1.8.0-openjdk -y
@@ -75,7 +77,7 @@ render the system non-functional.
 
 # If yo have kerberos + FreeIPA
 # # if Red Hat IPA is used as the KDC
-yum install krb5-workstation krb5-libs freeipa-client -y
+yum install openldap-clients krb5-workstation krb5-libs freeipa-client -y
 
 
 sudo mkfs -t ext4 /dev/sdc
@@ -113,8 +115,8 @@ then
 
     #Descargar y cargar binarios al repo local server
     yum install wget -y
-    wget https://$USER_REPO:$PASS@archive.cloudera.com/p/cm7/7.10.1/repo-as-tarball/cm7.10.1-redhat8.tar.gz
-    tar xvfz cm7.10.1-redhat8.tar.gz -C /var/www/html/cloudera-repos/cm7/$CM_VERSION --strip-components=1
+    wget https://$USER_REPO:$PASS@archive.cloudera.com/p/cm7/$CM_VERSION/repo-as-tarball/cm$CM_VERSION-redhat8.tar.gz
+    tar xvfz cm$CM_VERSION-redhat8.tar.gz -C /var/www/html/cloudera-repos/cm7/$CM_VERSION --strip-components=1
     sudo chmod -R ugo+rX /var/www/html/cloudera-repos/cm7/$CM_VERSION
 
     echo "[cloudera-repo]
@@ -202,3 +204,12 @@ gpgcheck=0" | sudo tee -a /etc/yum.repos.d/cloudera-manager.repo
     sudo yum -y remove expect
 
 fi 
+sudo /usr/bin/hostnamectl set-hostname $(hostname).$DOMAIN_TF
+sudo ipa-client-install \
+--domain=$DOMAIN_TF \
+--server=$IPA_SERVER \
+--principal=$IPA_USER \
+--password=$IPA_PASS \
+-N \
+--fixed-primary \
+-U
